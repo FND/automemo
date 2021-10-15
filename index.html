@@ -25,131 +25,27 @@ textarea {
 	width: 100%;
 	min-height: 10rem;
 }
+
+form p:emtpy {
+	display: none;
+}
+
+form p a {
+	display: block;
+}
 	</style>
 </head>
 
 <body>
 	<h1>automemoizer</h1>
-	<textarea></textarea>
-	<button type="button" data-action="save">save</button>
-	<button type="button" data-action="reload">reload</button>
+	<form>
+		<p></p>
+		<textarea></textarea>
+		<button type="button">save</button>
+	</form>
 
 	<script type="text/plain" id="store">hello world</script>
-
-	<script>
-(function() {
-
-let TXT = document.querySelector("textarea");
-let BTN_SAVE = document.querySelector("button[data-action=save]");
-let BTN_LOAD = document.querySelector("button[data-action=reload]");
-
-async function init() {
-	let store = new Store();
-
-	await populate(store);
-
-	BTN_SAVE.addEventListener("click", async ev => {
-		let { body } = document;
-		let unlock = lock(body);
-		let { download } = await store.save(TXT.value);
-		unlock();
-
-		download.textContent = "download"; // XXX: hacky
-		body.insertBefore(download, body.firstChild); // FIXME: proper notification
-	});
-
-	BTN_LOAD.addEventListener("click", async ev => {
-		populate(store);
-	});
-}
-
-async function populate(store) {
-	let unlock = lock(document.body);
-	let { data, mismatch } = await store.load();
-	TXT.value = data;
-	unlock();
-}
-
-function lock(el) {
-	el.setAttribute("aria-busy", "true");
-	return () => void el.removeAttribute("aria-busy");
-}
-
-// TODO: support for IndexedDB
-// TODO: support for file-system API
-class Store {
-	constructor(key = document.location.toString(), doc = new Document()) {
-		this.key = key;
-		this.doc = doc;
-	}
-
-	async save(value) {
-		localStorage.setItem(this.key, value);
-		let { doc } = this;
-		doc.store = value;
-		return {
-			download: generateDownloadLink(null, doc.serialize())
-		};
-	}
-
-	async load() {
-		let data = localStorage.getItem(this.key)
-		let original = this.doc.store;
-		if(data === null) {
-			data = original;
-		} else if(data !== original) {
-			var stale = true;
-		}
-		return {
-			data,
-			// indicates mismatch between document and browser-bound data
-			stale: stale || false
-		}
-	}
-}
-
-class Document {
-	constructor(root = document.documentElement) {
-		let store = root.querySelector("#store");
-		let t = this.token = "MTU3ODY5MTY0Mzg2MDQ4NTU0Mzc0NzUxODEzODc2NDE1MzcxNzA5";
-
-		this.store = store.textContent;
-		store.textContent = t;
-		let doctype = new XMLSerializer().serializeToString(document.doctype);
-		this.template = [doctype, root.outerHTML].join("\n");
-	}
-
-	serialize() {
-		return this.template.replace(`>${this.token}<`, `>${this.store}<`);
-	}
-}
-
-// adapted from TiddlyWiki
-function generateDownloadLink(filename, html) {
-	if(!filename) {
-		let path = document.location.pathname;
-		let i = path.lastIndexOf("/") + 1;
-		filename = i ? decodeURIComponent(path.substr(i)) :
-				`${encodeURIComponent(document.title)}.html`;
-	}
-
-	try {
-		let blob = new Blob([html], { type: "text/html" });
-		var uri = URL.createObjectURL(blob);
-	} catch(err) { // XXX: obsolete?
-		uri = `data:text/html,${encodeURIComponent(html)}`;
-	}
-
-	let el = document.createElement("a");
-	el.setAttribute("download", filename);
-	el.setAttribute("href", uri);
-	return el;
-}
-
-init();
-
-}());
-	</script>
+	<script type="module" src="./src/index.js"></script>
 </body>
 
 </html>
