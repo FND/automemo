@@ -1,0 +1,9 @@
+{
+	"scripts": {
+		"test": "eslint --cache src && echo ✓"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"eslint-config-fnd": "^1.12.0"
+	}
+}

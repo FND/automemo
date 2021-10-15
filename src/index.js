@@ -19,7 +19,7 @@ async function onSave(ev) {
 async function save(payload) {
 	await selectFile();
 	try {
-		var res = await DOC.save(payload);
+		var res = await DOC.save(payload); // eslint-disable-line no-var
 	} catch(err) {
 		BOX.textContent = err.message;
 		return;

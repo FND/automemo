@@ -1,8 +1,10 @@
+/* eslint-env browser */
+
 // adapted from TiddlyWiki <http://tiddlywiki.com>
 export function generateDownloadLink(label, filename, html) {
 	try {
 		let blob = new Blob([html], { type: "text/html" });
-		var uri = URL.createObjectURL(blob);
+		var uri = URL.createObjectURL(blob); // eslint-disable-line no-var
 	} catch(err) { // XXX: obsolete?
 		uri = `data:text/html,${encodeURIComponent(html)}`;
 	}

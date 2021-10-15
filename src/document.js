@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { encode } from "./html.js";
 
 let TOKEN = "MTU3ODY5MTY0Mzg2MDQ4NTU0Mzc0NzUxODEzODc2NDE1MzcxNzA5";
