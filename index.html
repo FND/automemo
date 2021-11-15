@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>automemoizer</title>
+	<title>notes manager</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 *,
@@ -17,34 +17,35 @@ body {
 	margin: 1rem auto;
 	font-family: sans-serif;
 }
-body[aria-busy=true] {
-	opacity: 0.5;
+
+label {
+	display: block;
 }
 
-textarea {
-	width: 100%;
-	min-height: 10rem;
+document-controls {
+	display: block;
+	margin-bottom: 1rem;
+	border: 1px solid #AAA;
+	padding: 0.5rem;
+	background-color: #EEE;
 }
-
-form p:emtpy {
+document-controls:empty {
 	display: none;
 }
 
-form p a {
+notes-manager {
 	display: block;
 }
 	</style>
 </head>
 
 <body>
-	<h1>automemoizer</h1>
-	<form>
-		<p></p>
-		<textarea></textarea>
-		<button type="button">save</button>
-	</form>
+	<h1>notes manager</h1>
+	<document-controls></document-controls>
+	<notes-manager data-store="notes">
+		hello world
+	</notes-manager>
 
-	<script type="text/plain" id="store">hello world</script>
 	<script type="module" src="./src/index.js"></script>
 </body>
 
