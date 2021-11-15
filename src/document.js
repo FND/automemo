@@ -1,4 +1,5 @@
 /* eslint-env browser */
+import { TextFile } from "./fs.js";
 import { serializeDOM } from "./html.js";
 import { raise } from "./util.js";
 
@@ -35,9 +36,44 @@ export class FileDocument extends DocumentStore {
 		super(doc);
 		this._path = doc.location.pathname;
 		this._title = doc.title;
+		this.file = null;
+	}
+
+	async save(storeName, payload) {
+		let html = await super.update(storeName, payload);
+
+		let { file } = this;
+		if(file) {
+			await file.write(html);
+		}
+
+		return {
+			strategy: file ? "file" : "manual",
+			html
+		};
+	}
+
+	async selectFile() {
+		if(this.file || !TextFile) {
+			return;
+		}
+
+		try {
+			this.file = await TextFile.select(".html");
+		} catch(err) {
+			if(err.name !== "AbortError") {
+				throw err;
+			}
+			// TODO: prevent repeat prompts?
+		}
 	}
 
 	get filename() {
+		let { file } = this;
+		if(file) {
+			return file.name;
+		}
+
 		let path = this._path;
 		let i = path.lastIndexOf("/") + 1;
 		let fn = i && decodeURIComponent(path.substr(i));

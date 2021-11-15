@@ -5,15 +5,17 @@ import { dispatchEvent } from "./util.js";
 customElements.define("document-controls", DocumentControls);
 
 // XXX: DEBUG
-setTimeout(() => {
+let PAYLOADS = [
+	"lorem ipsum",
+	"lorem ipsum\ndolor sit amet"
+];
+document.querySelector("button").addEventListener("click", ev => {
+	if(PAYLOADS.length === 0) {
+		return;
+	}
+
 	dispatchEvent(document.body, "document:save", {
 		store: "notes",
-		payload: "lorem ipsum"
+		payload: PAYLOADS.shift()
 	});
-}, 1000);
-setTimeout(() => {
-	dispatchEvent(document.body, "document:save", {
-		store: "notes",
-		payload: "lorem ipsum\ndolor sit amet"
-	});
-}, 2000);
+});

@@ -4,8 +4,7 @@ import { generateDownloadLink, createElement } from "./html.js";
 
 export class DocumentControls extends HTMLElement {
 	connectedCallback() {
-		let doc = this._doc = new FileDocument();
-		this._filename = doc.filename; // optimization
+		this._doc = new FileDocument();
 
 		let onSave = this.onSave = this.onSave.bind(this);
 		document.body.addEventListener("document:save", onSave);
@@ -18,17 +17,20 @@ export class DocumentControls extends HTMLElement {
 	async onSave(ev) {
 		ev.stopPropagation();
 
+		let doc = this._doc;
+		await doc.selectFile(); // FIXME: ensure concurrent events are not lost
+
 		let { store, payload } = ev.detail;
-		let html = await this._doc.update(store, payload);
+		let { strategy, html } = await doc.save(store, payload);
 
 		let link = this.querySelector("a");
 		if(link) {
 			link.parentNode.removeChild(link);
 		}
 
-		let filename = this._filename;
+		let filename = doc.filename;
 		link = generateDownloadLink(filename, html);
-		link.textContent = "download ";
+		link.textContent = strategy === "file" ? "backup " : "download "; // XXX: crude
 		createElement("code", null, {
 			text: filename,
 			parent: link
