@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+let fs = require("fs").promises;
+
+main(...process.argv.slice(2));
+
+async function main(htmlFile, jsFile) {
+	let [html, js] = [htmlFile, jsFile].map(async filepath => {
+		filepath = await fs.realpath(filepath);
+		return fs.readFile(filepath, "utf8");
+	});
+	[html, js] = await Promise.all([html, js]);
+
+	html = html.replace(/<script[^>]+><\/script>/, `<script>${js}</script>`);
+	console.log(html); // eslint-disable-line no-console
+}

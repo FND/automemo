@@ -1,9 +1,13 @@
 {
 	"scripts": {
+		"build": "npm run build:bundle; npm run build:html",
+		"build:bundle": "esbuild --bundle --outfile=dist/bundle.js src/index.js",
+		"build:html": "./bin/inline-js index.html dist/bundle.js > automemo.html",
 		"test": "eslint --cache src && echo ✓"
 	},
 	"dependencies": {},
 	"devDependencies": {
+		"esbuild": "^0.13.14",
 		"eslint-config-fnd": "^1.12.0"
 	}
 }
