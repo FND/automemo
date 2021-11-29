@@ -2,13 +2,19 @@ let supported = !!window.showSaveFilePicker;
 
 export let TextFile = supported && class TextFile {
 	static async select(ext = ".txt") {
-		let fh = await window.showSaveFilePicker({
-			types: [{
-				accept: {
-					"text/plain": ext.pop ? ext : [ext]
-				}
-			}]
-		});
+		let types = [{
+			accept: {
+				"text/plain": ext.pop ? ext : [ext]
+			}
+		}];
+		try { // eslint-disable-next-line no-var
+			var fh = await window.showSaveFilePicker({ types });
+		} catch(err) {
+			if(err.name === "AbortError") {
+				return null;
+			}
+			throw err;
+		}
 		return new this(fh);
 	}
 
@@ -17,9 +23,12 @@ export let TextFile = supported && class TextFile {
 	}
 
 	async write(content) {
-		let writable = await this._fh.createWritable();
-		await writable.write(content);
-		await writable.close();
+		let stream = await this._fh.createWritable();
+		try {
+			await stream.write(content);
+		} finally {
+			await stream.close();
+		}
 	}
 
 	get name() {

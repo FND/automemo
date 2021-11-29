@@ -58,14 +58,7 @@ export class FileDocument extends DocumentStore {
 			return;
 		}
 
-		try {
-			this.file = await TextFile.select(".html");
-		} catch(err) {
-			if(err.name !== "AbortError") {
-				throw err;
-			}
-			// TODO: prevent repeat prompts?
-		}
+		this.file = await TextFile.select(".html"); // TODO: prevent repeat prompts?
 	}
 
 	get filename() {
