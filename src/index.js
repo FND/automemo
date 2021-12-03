@@ -1,8 +1,8 @@
 /* eslint-env browser */
 import { DocumentControls } from "./controls.js";
-import { NotesManager } from "./manager.js";
-import { NotesForm } from "./form.js";
+import { NotesManager } from "./notes.js";
+import * as form from "./local_form.js";
 
 customElements.define("document-controls", DocumentControls);
 customElements.define("notes-manager", NotesManager);
-customElements.define("notes-form", NotesForm);
+customElements.define(form.TAG, form.LocalForm);
