@@ -3,9 +3,9 @@ import { makeForm } from "./local_form.js";
 import { createElement } from "./html.js";
 import { dispatchEvent } from "./util.js";
 
-let EVENT = "notes:new";
+let EVENT = "tasks:new";
 
-export class NotesManager extends HTMLElement {
+export class TasksManager extends HTMLElement {
 	connectedCallback() {
 		let form = makeForm({ event: EVENT, reset: "" },
 				createElement("input", { type: "text", name: "description" }),
@@ -16,19 +16,40 @@ export class NotesManager extends HTMLElement {
 				createElement("ul", null, { parent: this });
 
 		this.addEventListener(EVENT, this.onCreate);
+		this.addEventListener("change", this.onChange);
+	}
+
+	onChange(ev) {
+		let cbox = ev.target;
+		if(cbox.checked) {
+			cbox.setAttribute("checked", "");
+		} else {
+			cbox.removeAttribute("checked");
+		}
+
+		this.save();
+		ev.stopPropagation();
 	}
 
 	onCreate(ev) {
-		createElement("li", null, {
+		let el = document.createElement("li");
+		let label = createElement("label", null, { parent: el });
+		createElement("input", { type: "checkbox" }, { parent: label });
+		createElement("span", null, {
 			text: ev.detail.get("description"),
-			parent: this._list
+			parent: label
 		});
+		this._list.appendChild(el);
 
+		this.save();
+		ev.stopPropagation();
+	}
+
+	save() {
 		dispatchEvent(document.body, "document:save", {
 			store: this.store,
 			payload: this._list.outerHTML
 		});
-		ev.stopPropagation();
 	}
 
 	get store() {

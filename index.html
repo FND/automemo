@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>notes manager</title>
+	<title>Memoizer</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 *,
@@ -18,13 +18,19 @@ body {
 	font-family: sans-serif;
 }
 
+body > * {
+	margin: 0;
+}
+body > * + * {
+	margin-top: 1rem;;
+}
+
 label {
 	display: block;
 }
 
 document-controls {
 	display: block;
-	margin-bottom: 1rem;
 	border: 1px solid #AAA;
 	padding: 0.5rem;
 	background-color: #EEE;
@@ -33,16 +39,44 @@ document-controls:empty {
 	display: none;
 }
 
-notes-manager {
+notes-manager,
+tasks-manager {
 	display: block;
+}
+
+notes-manager > *,
+tasks-manager > * {
+	margin: 0;
+}
+notes-manager > * + *,
+tasks-manager > * + * {
+	margin-top: 0.5rem;;
+}
+
+notes-manager ul {
+	padding-left: 1rem;
+}
+
+tasks-manager ul {
+	padding-left: 0;
+	list-style-type: none;
+}
+
+tasks-manager span::before {
+	content: " ";
 }
 	</style>
 </head>
 
 <body>
-	<h1>notes manager</h1>
+	<h1>Memoizer</h1>
 	<document-controls></document-controls>
+
+	<h2>Notes</h2>
 	<notes-manager data-store="notes"></notes-manager>
+
+	<h2>Tasks</h2>
+	<tasks-manager data-store="tasks"></tasks-manager>
 
 	<script type="module" src="./src/index.js"></script>
 </body>
