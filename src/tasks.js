@@ -20,11 +20,15 @@ export class TasksManager extends HTMLElement {
 	}
 
 	onChange(ev) {
-		let cbox = ev.target;
-		if(cbox.checked) {
-			cbox.setAttribute("checked", "");
+		let el = ev.target;
+		if(!el.matches("input[type=checkbox]")) { // event delegation
+			return;
+		}
+
+		if(el.checked) {
+			el.setAttribute("checked", "");
 		} else {
-			cbox.removeAttribute("checked");
+			el.removeAttribute("checked");
 		}
 
 		this.save();
