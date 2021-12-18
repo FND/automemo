@@ -1,7 +1,9 @@
 /* eslint-env browser */
+/* global dragula */
 import { makeForm } from "./local_form.js";
 import { createElement } from "./html.js";
 import { dispatchEvent } from "./util.js";
+import "../assets/dragula.min.js";
 
 let EVENT = "tasks:new";
 
@@ -12,8 +14,15 @@ export class TasksManager extends HTMLElement {
 				createElement("button", null, { text: "add" }));
 		this.insertBefore(form, this.firstChild);
 
-		this._list = this.querySelector("ul") ||
+		let list = this._list = this.querySelector("ul") ||
 				createElement("ul", null, { parent: this });
+		dragula([list], {
+			mirrorContainer: document.createElement("div"), // XXX: hacky?
+			moves: (el, container, handle) => handle.classList.contains("handle")
+		});
+		list.querySelectorAll("li").forEach(el => {
+			insertHandle(el);
+		});
 
 		this.addEventListener(EVENT, this.onCreate);
 		this.addEventListener("change", this.onChange);
@@ -43,6 +52,7 @@ export class TasksManager extends HTMLElement {
 			text: ev.detail.get("description"),
 			parent: label
 		});
+		insertHandle(el);
 		this._list.appendChild(el);
 
 		this.save();
@@ -50,13 +60,24 @@ export class TasksManager extends HTMLElement {
 	}
 
 	save() {
+		let list = this._list.cloneNode(true);
+		list.querySelectorAll(".handle").forEach(el => {
+			el.parentNode.removeChild(el);
+		});
 		dispatchEvent(document.body, "document:save", {
 			store: this.store,
-			payload: this._list.outerHTML
+			payload: list.outerHTML
 		});
 	}
 
 	get store() {
 		return this.getAttribute("data-store");
 	}
+}
+
+function insertHandle(parent) {
+	createElement("button", { class: "handle" }, {
+		text: "↕️",
+		parent
+	});
 }

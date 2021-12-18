@@ -53,6 +53,16 @@ tasks-manager > * + * {
 	margin-top: 0.5rem;;
 }
 
+notes-manager li,
+tasks-manager li {
+	display: flex;
+}
+
+notes-manager label,
+tasks-manager label {
+	flex-grow: 1;
+}
+
 notes-manager ul {
 	padding-left: 1rem;
 }
@@ -64,6 +74,13 @@ tasks-manager ul {
 
 tasks-manager span::before {
 	content: " ";
+}
+
+.handle {
+	border: none;
+	background-color: transparent;
+	cursor: move;
+	opacity: 0.8;
 }
 	</style>
 </head>
@@ -79,6 +96,7 @@ tasks-manager span::before {
 	<tasks-manager data-store="tasks"></tasks-manager>
 
 	<script type="module" src="./src/index.js"></script>
+	<link rel="stylesheet" href="./assets/dragula.min.css">
 </body>
 
 </html>

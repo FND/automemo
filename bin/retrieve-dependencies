@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+root=`dirname $0`
+root="$root/.."
+root=`node -r fs -p "fs.realpathSync(process.argv[1]);" "$root"`
+assets_dir="$root/assets"
+
+dragula="https://raw.githubusercontent.com/bevacqua/dragula/v3.7.3/dist"
+
+abort() {
+	message="$@"
+
+	echo "$message" >&2
+	exit 1
+}
+
+mkdir "$assets_dir" || \
+		abort "ERROR: \`$assets_dir\` already exist; please remove it first"
+(
+	cd "$assets_dir";
+	wget "$dragula/dragula.min.css";
+	wget "$dragula/dragula.min.js"
+)
+sha256sum -c assets.checksums && \
+		exit 0
+rm -r "$assets_dir"
+abort "ERROR: invalid assets - aborting"

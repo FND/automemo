@@ -1,4 +1,5 @@
 /node_modules
 /.eslintcache
 
+/assets
 /dist
